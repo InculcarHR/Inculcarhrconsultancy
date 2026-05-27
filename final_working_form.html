@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Employee Background Verification Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f1e35;
+    --navy-mid: #162844;
+    --navy-light: #1e3a5f;
+    --gold: #c8a951;
+    --gold-light: #e4c97a;
+    --gold-pale: #f9f3e3;
+    --slate: #4a5568;
+    --slate-light: #718096;
+    --off-white: #f8f6f1;
+    --white: #ffffff;
+    --border: #ddd5c0;
+    --border-focus: #c8a951;
+    --danger: #c0392b;
+    --success: #1a6b4a;
+    --shadow: 0 4px 24px rgba(15,30,53,0.10);
+    --shadow-lg: 0 8px 40px rgba(15,30,53,0.16);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--off-white);
+    color: var(--navy);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* Header */
+  .form-header {
+    background: var(--navy);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .form-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      135deg,
+      transparent,
+      transparent 40px,
+      rgba(200,169,81,0.04) 40px,
+      rgba(200,169,81,0.04) 41px
+    );
+  }
+  .header-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 40px 44px;
+    position: relative;
+    z-index: 1;
+  }
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(200,169,81,0.15);
+    border: 1px solid rgba(200,169,81,0.35);
+    border-radius: 4px;
+    padding: 5px 12px;
+    margin-bottom: 20px;
+  }
+  .header-badge span {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  .header-badge svg { color: var(--gold); flex-shrink: 0; }
+  .form-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+  }
+  .form-header p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 300;
+    letter-spacing: 0.2px;
+    max-width: 500px;
+  }
+  .header-meta {
+    display: flex;
+    gap: 28px;
+    margin-top: 28px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    flex-wrap: wrap;
+  }
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .meta-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    font-weight: 500;
+  }
+  .meta-value {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    font-weight: 400;
+  }
+
+  /* Progress Indicator */
+  .progress-bar-wrap {
+    background: var(--navy-mid);
+    padding: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .progress-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+  .prog-step {
+    flex: 1;
+    min-width: 90px;
+    padding: 14px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .prog-step.active { border-bottom-color: var(--gold); }
+  .prog-step .step-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.35);
+  }
+  .prog-step.active .step-num {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .prog-step .step-label {
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.35);
+    font-weight: 500;
+  }
+  .prog-step.active .step-label { color: var(--gold); }
+
+  /* Main form */
+  .form-body {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 36px 40px 60px;
+  }
+
+  /* Sections */
+  .form-section {
+    background: var(--white);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    animation: fadeUp 0.4s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .form-section:nth-child(1) { animation-delay: 0.05s; }
+  .form-section:nth-child(2) { animation-delay: 0.10s; }
+  .form-section:nth-child(3) { animation-delay: 0.15s; }
+  .form-section:nth-child(4) { animation-delay: 0.20s; }
+  .form-section:nth-child(5) { animation-delay: 0.25s; }
+  .form-section:nth-child(6) { animation-delay: 0.30s; }
+
+  .section-head {
+    padding: 20px 28px;
+    background: linear-gradient(90deg, #f9f7f2 0%, #ffffff 100%);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-icon svg { color: var(--gold); }
+  .section-head-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--navy);
+    letter-spacing: -0.2px;
+  }
+  .section-head-text p {
+    font-size: 12px;
+    color: var(--slate-light);
+    margin-top: 2px;
+  }
+  .section-number {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--gold);
+    background: var(--gold-pale);
+    border: 1px solid rgba(200,169,81,0.3);
+    border-radius: 4px;
+    padding: 3px 8px;
+  }
+
+  .section-body { padding: 28px 28px 24px; }
+
+  /* Grid layout */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px 20px; }
+  .col-span-2 { grid-column: span 2; }
+  .col-span-3 { grid-column: span 3; }
+
+  /* Form fields */
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+  .field label .req { color: var(--gold); margin-left: 2px; }
+
+  .field input,
+  .field select,
+  .field textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: #000000;
+    background: var(--off-white);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 14px;
+    transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+    outline: none;
+    width: 100%;
+  }
+  .field input::placeholder,
+  .field textarea::placeholder { color: #bbb4a0; font-weight: 300; }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--border-focus);
+    background: #fffef9;
+    box-shadow: 0 0 0 3px rgba(200,169,81,0.12);
+  }
+  .field select { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23718096' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+  .field textarea { resize: vertical; min-height: 88px; line-height: 1.6; }
+
+  /* Hint text */
+  .field-hint { font-size: 11px; color: var(--slate-light); margin-top: -2px; }
+
+  /* Divider */
+  .divider {
+    border: none;
+    border-top: 1px dashed var(--border);
+    margin: 22px 0;
+  }
+
+  /* Sub-heading */
+  .sub-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy-light);
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--gold-pale);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sub-heading::before {
+    content: '';
+    display: inline-block;
+    width: 3px; height: 14px;
+    background: var(--gold);
+    border-radius: 2px;
+  }
+
+  /* Radio / Checkbox groups */
+  .radio-group, .check-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 2px;
+  }
+  .radio-pill, .check-pill {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--slate);
+    background: var(--off-white);
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .radio-pill input, .check-pill input { display: none; }
+  .radio-pill:has(input:checked),
+  .check-pill:has(input:checked) {
+    border-color: var(--gold);
+    background: var(--gold-pale);
+    color: var(--navy);
+    font-weight: 500;
+  }
+  .radio-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .radio-pill:has(input:checked) .radio-dot {
+    border-color: var(--gold);
+    background: var(--gold);
+  }
+  .radio-dot::after {
+    content: '';
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--navy);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .radio-pill:has(input:checked) .radio-dot::after { opacity: 1; }
+
+  /* Employment entry card */
+  .entry-card {
+    background: var(--off-white);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .entry-card-label {
+    position: absolute;
+    top: -10px; left: 16px;
+    background: var(--navy);
+    color: var(--gold);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 2px 10px;
+    border-radius: 3px;
+  }
+
+  /* Consent box */
+  .consent-box {
+    background: linear-gradient(135deg, #0f1e35 0%, #1e3a5f 100%);
+    border-radius: 8px;
+    padding: 22px 24px;
+    margin-top: 4px;
+  }
+  .consent-box p {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.8;
+    margin-bottom: 16px;
+  }
+  .consent-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .consent-check input[type="checkbox"] { display: none; }
+  .consent-box-cb {
+    width: 18px; height: 18px;
+    border: 1.5px solid rgba(200,169,81,0.5);
+    border-radius: 4px;
+    background: rgba(200,169,81,0.1);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: all 0.15s;
+  }
+  .consent-check:has(input:checked) .consent-box-cb {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+  .consent-check:has(input:checked) .consent-box-cb::after {
+    content: '✓';
+    font-size: 11px;
+    color: var(--navy);
+    font-weight: 700;
+  }
+  .consent-check span {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.7;
+  }
+
+  /* Signature area */
+  .sig-wrap {
+    border: 1.5px dashed var(--border);
+    border-radius: 6px;
+    background: var(--off-white);
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .sig-wrap:hover { border-color: var(--gold); background: var(--gold-pale); }
+  .sig-label { font-size: 12px; color: var(--slate-light); font-style: italic; }
+
+  /* Action buttons */
+  .form-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 32px;
+    padding-top: 28px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .btn-save {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--slate);
+    background: transparent;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    padding: 10px 22px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .btn-save:hover { border-color: var(--slate); color: var(--navy); }
+  .btn-submit {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    background: var(--gold);
+    border: none;
+    border-radius: 7px;
+    padding: 12px 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    letter-spacing: 0.2px;
+    box-shadow: 0 2px 12px rgba(200,169,81,0.3);
+  }
+  .btn-submit:hover {
+    background: var(--gold-light);
+    box-shadow: 0 4px 20px rgba(200,169,81,0.45);
+    transform: translateY(-1px);
+  }
+  .btn-submit:active { transform: translateY(0); }
+
+  /* Required note */
+  .req-note {
+    font-size: 11.5px;
+    color: var(--slate-light);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .req-note span { color: var(--gold); font-weight: 700; }
+
+  /* Notice banner */
+  .notice-banner {
+    background: var(--gold-pale);
+    border: 1px solid rgba(200,169,81,0.4);
+    border-radius: 8px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 22px;
+    font-size: 12.5px;
+    color: #6b5a2a;
+    line-height: 1.6;
+  }
+  .notice-banner svg { flex-shrink: 0; margin-top: 2px; }
+
+  @media (max-width: 680px) {
+    .header-inner { padding: 32px 20px 28px; }
+    .form-body { padding: 24px 16px 48px; }
+    .section-body { padding: 20px 16px 18px; }
+    .section-head { padding: 16px 18px; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .col-span-2, .col-span-3 { grid-column: span 1; }
+    .form-header h1 { font-size: 26px; }
+    .progress-inner { padding: 0 16px; }
+    .form-actions { flex-direction: column-reverse; }
+    .btn-submit, .btn-save { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="form-header">
+  <div class="header-inner">
+    <div class="header-badge">
+      <svg width="12" height="12" fill="currentColor" viewBox="0 0 16 16"><path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/></svg>
+      <span>Confidential &amp; Secure</span>
+    </div>
+    <h1>Employee Background Verification</h1>
+    <p>Please complete all sections accurately. Information provided will be verified and kept strictly confidential.</p>
+    <div class="header-meta">
+      <div class="meta-item">
+        <span class="meta-label">Form Reference</span>
+        <span class="meta-value">BGV-2026-EMP</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Version</span>
+        <span class="meta-value">3.1 — May 2026</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Dept.</span>
+        <span class="meta-value">Human Resources</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Processing Time</span>
+        <span class="meta-value">5–10 Business Days</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Progress Steps -->
+<div class="progress-bar-wrap">
+  <div class="progress-inner">
+    <div class="prog-step active">
+      <div class="step-num">1</div>
+      <div class="step-label">Personal</div>
+    </div>
+    <div class="prog-step">
+      <div class="step-num">2</div>
+      <div class="step-label">Employment</div>
+    </div>
+    <div class="prog-step">
+      <div class="step-num">3</div>
+      <div class="step-label">Education</div>
+    </div>
+    <div class="prog-step">
+      <div class="step-num">4</div>
+      <div class="step-label">References</div>
+    </div>
+    <div class="prog-step">
+      <div class="step-num">5</div>
+      <div class="step-label">Legal</div>
+    </div>
+    <div class="prog-step">
+      <div class="step-num">6</div>
+      <div class="step-label">Consent</div>
+    </div>
+  </div>
+</div>
+
+<!-- Form Body -->
+<div class="form-body">
+  <div class="req-note"><span>*</span> Indicates required fields</div>
+
+  <div class="notice-banner">
+    <svg width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
+    All fields are protected under applicable data privacy regulations. Your information will only be used for employment verification purposes.
+  </div>
+
+  <!-- ✅ Formspree: Replace YOUR_FORM_ID below with your actual Formspree form ID -->
+  <!-- Get your free form ID at https://formspree.io → New Form → copy the ID from the endpoint -->
+  <div id="form-success" style="display:none; background:#1a6b4a; color:#fff; border-radius:10px; padding:28px 32px; margin-bottom:28px; font-size:15px; text-align:center; line-height:1.7;">
+    <div style="font-size:32px; margin-bottom:10px;">✅</div>
+    <strong style="font-size:18px;">Form Submitted Successfully!</strong><br>
+    Thank you — your background verification form has been received. You will be contacted within 5–10 business days.
+  </div>
+  <div id="form-error" style="display:none; background:#c0392b; color:#fff; border-radius:10px; padding:20px 24px; margin-bottom:20px; font-size:14px;">
+    ⚠️ There was an error submitting the form. Please try again or contact HR directly.
+  </div>
+
+  <form\1 enctype="multipart/form-data" method="POST">
+
+    <!-- Section 1: Personal Information -->
+    <div class="form-section">
+      <div class="section-head">
+        <div class="section-icon">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.029 10 8 10c-2.029 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/></svg>
+        </div>
+        <div class="section-head-text">
+          <h2>Personal Information</h2>
+          <p>Your basic personal and contact details</p>
+        </div>
+        <span class="section-number">01 / 06</span>
+      </div>
+      <div class="section-body">
+        <div class="grid-3">
+          <div class="field">
+            <label>First Name <span class="req">*</span></label>
+            <input type="text" name="first_name" placeholder="e.g. Alexandra">
+          </div>
+          <div class="field">
+            <label>Middle Name</label>
+            <input type="text" name="middle_name" placeholder="Optional">
+          </div>
+          <div class="field">
+            <label>Last Name <span class="req">*</span></label>
+            <input type="text" name="last_name" placeholder="e.g. Harrison">
+          </div>
+          <div class="field">
+            <label>Date of Birth <span class="req">*</span></label>
+            <input type="date" name="date_of_birth">
+          </div>
+          <div class="field">
+            <label>Gender</label>
+            <select name="gender">
+              <option value="">Select</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Non-binary</option>
+              <option>Prefer not to say</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Nationality <span class="req">*</span></label>
+            <input type="text" name="nationality" placeholder="e.g. American">
+          </div>
+          <div class="field col-span-2">
+            <label>National ID / Passport Number <span class="req">*</span></label>
+            <input type="text" name="id_number" placeholder="Government-issued ID number">
+          </div>
+          <div class="field">
+            <label>ID Type <span class="req">*</span></label>
+            <select name="id_type">
+              <option value="">Select type</option>
+              <option>National ID Card</option>
+              <option>Passport</option>
+              <option>Driver's License</option>
+              <option>SSN</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="divider">
+        <div class="sub-heading">Contact Details</div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label>Personal Email <span class="req">*</span></label>
+            <input type="email" name="personal_email" placeholder="email@example.com">
+          </div>
+          <div class="field">
+            <label>Phone Number <span class="req">*</span></label>
+            <input type="tel" name="phone_number" placeholder="+1 (555) 000-0000">
+          </div>
+          <div class="field col-span-2">
+            <label>Current Residential Address <span class="req">*</span></label>
+            <input type="text" name="address" placeholder="Street address, apartment, suite, etc.">
+          </div>
+          <div class="field">
+            <label>City <span class="req">*</span></label>
+            <input type="text" name="city" placeholder="City">
+          </div>
+          <div class="field">
+            <label>State / Province <span class="req">*</span></label>
+            <input type="text" name="state" placeholder="State">
+          </div>
+          <div class="field">
+            <label>Postal Code <span class="req">*</span></label>
+            <input type="text" name="postal_code" placeholder="ZIP / Postal code">
+          </div>
+          <div class="field">
+            <label>Country <span class="req">*</span></label>
+            <input type="text" name="country" placeholder="Country">
+          </div>
+          <div class="field">
+            <label>Years at this Address <span class="req">*</span></label>
+            <select name="years_at_address">
+              <option value="">Select</option>
+              <option>Less than 1 year</option>
+              <option>1–2 years</option>
+              <option>3–5 years</option>
+              <option>More than 5 years</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Previous Address (if &lt; 2 years)</label>
+            <input type="text" name="previous_address" placeholder="Previous residential address">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Employment History -->
+    <div class="form-section">
+      <div class="section-head">
+        <div class="section-icon">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1h-3zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5zm1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0zM1.5 4h13a.5.5 0 0 1 .5.5v1.616L8.129 7.948a.5.5 0 0 1-.258 0L1 6.116V4.5a.5.5 0 0 1 .5-.5z"/></svg>
+        </div>
+        <div class="section-head-text">
+          <h2>Employment History</h2>
+          <p>List your last 5 years of work history</p>
+        </div>
+        <span class="section-number">02 / 06</span>
+      </div>
+      <div class="section-body">
+        <div class="entry-card">
+          <div class="entry-card-label">Current / Most Recent</div>
+          <div class="grid-2" style="margin-top:8px">
+            <div class="field">
+              <label>Employer / Company Name <span class="req">*</span></label>
+              <input type="text" name="employer_company" placeholder="Company name">
+            </div>
+            <div class="field">
+              <label>Job Title / Designation <span class="req">*</span></label>
+              <input type="text" name="employer_title" placeholder="Your position">
+            </div>
+            <div class="field">
+              <label>Start Date <span class="req">*</span></label>
+              <input type="month">
+            </div>
+            <div class="field">
+              <label>End Date <span class="req">*</span></label>
+              <input type="month" name="employer1_end" placeholder="Or leave blank if current">
+            </div>
+            <div class="field col-span-2">
+              <label>Employer Address</label>
+              <input type="text" name="employer1_address" placeholder="Company address">
+            </div>
+            <div class="field">
+              <label>Supervisor Name</label>
+              <input type="text" name="employer_supervisor" placeholder="Direct supervisor">
+            </div>
+            <div class="field">
+              <label>Supervisor Contact</label>
+              <input type="text" placeholder="Phone or email">
+            </div>
+            <div class="field col-span-2">
+              <label>Reason for Leaving</label>
+              <select>
+                <option value="">Select reason</option>
+                <option>Better opportunity</option>
+                <option>Career change</option>
+                <option>Relocation</option>
+                <option>Company downsizing</option>
+                <option>Contract ended</option>
+                <option>Personal reasons</option>
+                <option>Currently employed</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field col-span-2">
+              <label>May we contact this employer?</label>
+              <div class="radio-group">
+                <label class="radio-pill"><input type="radio" name="contact_e1" value="yes"><div class="radio-dot"></div> Yes</label>
+                <label class="radio-pill"><input type="radio" name="contact_e1" value="no"><div class="radio-dot"></div> No</label>
+                <label class="radio-pill"><input type="radio" name="contact_e1" value="after_offer"><div class="radio-dot"></div> After Offer Only</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="entry-card">
+          <div class="entry-card-label">Previous Employer</div>
+          <div class="grid-2" style="margin-top:8px">
+            <div class="field">
+              <label>Employer / Company Name</label>
+              <input type="text" name="employer2_company" placeholder="Company name">
+            </div>
+            <div class="field">
+              <label>Job Title / Designation</label>
+              <input type="text" name="employer2_title" placeholder="Your position">
+            </div>
+            <div class="field">
+              <label>Start Date</label>
+              <input type="month">
+            </div>
+            <div class="field">
+              <label>End Date</label>
+              <input type="month">
+            </div>
+            <div class="field">
+              <label>Supervisor Name</label>
+              <input type="text" name="employer2_supervisor" placeholder="Direct supervisor">
+            </div>
+            <div class="field">
+              <label>Supervisor Contact</label>
+              <input type="text" placeholder="Phone or email">
+            </div>
+            <div class="field col-span-2">
+              <label>Reason for Leaving</label>
+              <select>
+                <option value="">Select reason</option>
+                <option>Better opportunity</option>
+                <option>Career change</option>
+                <option>Relocation</option>
+                <option>Company downsizing</option>
+                <option>Contract ended</option>
+                <option>Personal reasons</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Any gaps in employment? Please explain</label>
+          <textarea name="employment_gaps" placeholder="Describe any periods of unemployment, freelance work, education, or other activities..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Education -->
+    <div class="form-section">
+      <div class="section-head">
+        <div class="section-icon">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917l-7.5-3.5zM8 8.46 1.166 5.51 8 2.557l6.834 2.953L8 8.46z"/><path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466 4.176 9.032zm-.068 1.873.22-.748 3.496 1.311a.5.5 0 0 0 .352 0l3.496-1.311.22.748L8 12.46l-3.892-1.556z"/></svg>
+        </div>
+        <div class="section-head-text">
+          <h2>Educational Background</h2>
+          <p>Highest qualification and relevant credentials</p>
+        </div>
+        <span class="section-number">03 / 06</span>
+      </div>
+      <div class="section-body">
+        <div class="sub-heading">Highest Qualification</div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Degree / Qualification <span class="req">*</span></label>
+            <select name="degree">
+              <option value="">Select</option>
+              <option>High School Diploma / GED</option>
+              <option>Associate's Degree</option>
+              <option>Bachelor's Degree</option>
+              <option>Master's Degree</option>
+              <option>Doctoral Degree (PhD)</option>
+              <option>Professional Degree (MD, JD, etc.)</option>
+              <option>Vocational / Trade Certificate</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Field of Study / Major <span class="req">*</span></label>
+            <input type="text" name="field_of_study" placeholder="e.g. Computer Science">
+          </div>
+          <div class="field">
+            <label>Institution Name <span class="req">*</span></label>
+            <input type="text" name="institution_name" placeholder="University or school name">
+          </div>
+          <div class="field">
+            <label>Location (City, Country)</label>
+            <input type="text" name="institution_location" placeholder="e.g. Boston, USA">
+          </div>
+          <div class="field">
+            <label>Year of Graduation <span class="req">*</span></label>
+            <input type="number" name="graduation_year" placeholder="YYYY" min="1950" max="2030">
+          </div>
+          <div class="field">
+            <label>GPA / Grade (if applicable)</label>
+            <input type="text" name="gpa" placeholder="e.g. 3.8 / 4.0 or First Class">
+          </div>
+          <div class="field col-span-2">
+            <label>Are you currently enrolled in any academic program?</label>
+            <div class="radio-group">
+              <label class="radio-pill"><input type="radio" name="enrolled" value="yes"><div class="radio-dot"></div> Yes</label>
+              <label class="radio-pill"><input type="radio" name="enrolled" value="no"><div class="radio-dot"></div> No</label>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider">
+        <div class="sub-heading">Professional Certifications</div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Certification / License Name</label>
+            <input type="text" name="cert_name" placeholder="e.g. PMP, CPA, AWS Certified">
+          </div>
+          <div class="field">
+            <label>Issuing Organization</label>
+            <input type="text" name="cert_issuer" placeholder="e.g. PMI, AICPA, Amazon">
+          </div>
+          <div class="field">
+            <label>Issue Date</label>
+            <input type="month">
+          </div>
+          <div class="field">
+            <label>Expiry Date (if applicable)</label>
+            <input type="month">
+          </div>
+          <div class="field col-span-2">
+            <label>Certification ID / Number</label>
+            <input type="text" name="cert_id" placeholder="Certificate or license number">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: References -->
+    <div class="form-section">
+      <div class="section-head">
+        <div class="section-icon">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg>
+        </div>
+        <div class="section-head-text">
+          <h2>Professional References</h2>
+          <p>Provide at least two professional references</p>
+        </div>
+        <span class="section-number">04 / 06</span>
+      </div>
+      <div class="section-body">
+
+        <div class="entry-card">
+          <div class="entry-card-label">Reference 1</div>
+          <div class="grid-3" style="margin-top:8px">
+            <div class="field">
+              <label>Full Name <span class="req">*</span></label>
+              <input type="text" name="ref1_name" name="ref2_name" placeholder="Reference's full name">
+            </div>
+            <div class="field">
+              <label>Job Title</label>
+              <input type="text" placeholder="Their current title">
+            </div>
+            <div class="field">
+              <label>Company / Organization</label>
+              <input type="text" placeholder="Where they work">
+            </div>
+            <div class="field">
+              <label>Relationship <span class="req">*</span></label>
+              <select>
+                <option value="">Select</option>
+                <option>Former Manager</option>
+                <option>Former Colleague</option>
+                <option>Client</option>
+                <option>Mentor / Professor</option>
+                <option>Other Professional</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Phone <span class="req">*</span></label>
+              <input type="tel" placeholder="+1 (555) 000-0000">
+            </div>
+            <div class="field">
+              <label>Email <span class="req">*</span></label>
+              <input type="email" placeholder="reference@company.com">
+            </div>
+            <div class="field">
+              <label>Years Known</label>
+              <input type="number" placeholder="Years" min="0">
+            </div>
+          </div>
+        </div>
+
+        <div class="entry-card">
+          <div class="entry-card-label">Reference 2</div>
+          <div class="grid-3" style="margin-top:8px">
+            <div class="field">
+              <label>Full Name <span class="req">*</span></label>
+              <input type="text" placeholder="Reference's full name">
+            </div>
+            <div class="field">
+              <label>Job Title</label>
+              <input type="text" placeholder="Their current title">
+            </div>
+            <div class="field">
+              <label>Company / Organization</label>
+              <input type="text" placeholder="Where they work">
+            </div>
+            <div class="field">
+              <label>Relationship <span class="req">*</span></label>
+              <select>
+                <option value="">Select</option>
+                <option>Former Manager</option>
+                <option>Former Colleague</option>
+                <option>Client</option>
+                <option>Mentor / Professor</option>
+                <option>Other Professional</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Phone <span class="req">*</span></label>
+              <input type="tel" placeholder="+1 (555) 000-0000">
+            </div>
+            <div class="field">
+              <label>Email <span class="req">*</span></label>
+              <input type="email" placeholder="reference@company.com">
+            </div>
+            <div class="field">
+              <label>Years Known</label>
+              <input type="number" placeholder="Years" min="0">
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Section 5: Legal & Criminal -->
+    <div class="form-section">
+      <div class="section-head">
+        <div class="section-icon">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm.5 0A3.5 3.5 0 0 1 12 11h1.5s-.5-1.5-2-2.5A4 4 0 0 0 8.5 8z"/><path fill-rule="evenodd" d="M8 1a4 4 0 1 0 0 8A4 4 0 0 0 8 1zM4 5a4 4 0 1 1 8 0A4 4 0 0 1 4 5z"/><path d="M8.5 8.5a.5.5 0 0 1 .5.5v.5a.5.5 0 0 1-1 0V9a.5.5 0 0 1 .5-.5zM15 5a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5H1a.5.5 0 0 1-.5-.5v-5A.5.5 0 0 1 1 5h14zm-14.5.5v4h14v-4h-14z"/></svg>
+        </div>
+        <div class="section-head-text">
+          <h2>Legal &amp; Background Disclosures</h2>
+          <p>Please answer all questions honestly and completely</p>
+        </div>
+        <span class="section-number">05 / 06</span>
+      </div>
+      <div class="section-body">
+        <div style="display:flex;flex-direction:column;gap:20px;">
+
+          <div class="field">
+            <label>Have you ever been convicted of a criminal offence? <span class="req">*</span></label>
+            <div class="radio-group">
+              <label class="radio-pill"><input type="radio" name="criminal" value="yes"><div class="radio-dot"></div> Yes</label>
+              <label class="radio-pill"><input type="radio" name="criminal" value="no"><div class="radio-dot"></div> No</label>
+            </div>
+            <span class="field-hint">A conviction may not necessarily disqualify your application.</span>
+          </div>
+
+          <div class="field">
+            <label>If yes, please provide details</label>
+            <textarea name="criminal_details" placeholder="Describe nature of conviction, date, jurisdiction, and outcome..."></textarea>
+          </div>
+
+          <hr class="divider">
+
+          <div class="field">
+            <label>Are you currently subject to any pending legal proceedings? <span class="req">*</span></label>
+            <div class="radio-group">
+              <label class="radio-pill"><input type="radio" name="legal" value="yes"><div class="radio-dot"></div> Yes</label>
+              <label class="radio-pill"><input type="radio" name="legal" value="no"><div class="radio-dot"></div> No</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Have you ever been dismissed from employment for misconduct? <span class="req">*</span></label>
+            <div class="radio-group">
+              <label class="radio-pill"><input type="radio" name="misconduct" value="yes"><div class="radio-dot"></div> Yes</label>
+              <label class="radio-pill"><input type="radio" name="misconduct" value="no"><div class="radio-dot"></div> No</label>
+              <label class="radio-pill"><input type="radio" name="misconduct" value="na"><div class="radio-dot"></div> Not Applicable</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Do you have any existing non-compete or non-disclosure agreements? <span class="req">*</span></label>
+            <div class="radio-group">
+              <label class="radio-pill"><input type="radio" name="nda" value="yes"><div class="radio-dot"></div> Yes</label>
+              <label class="radio-pill"><input type="radio" name="nda" value="no"><div class="radio-dot"></div> No</label>
+            </div>
+            <span class="field-hint">If yes, please have a copy available for review.</span>
+          </div>
+
+          <div class="field">
+            <label>Do you hold any security clearances? <span class="req">*</span></label>
+            <div class="radio-group">
+              <label class="radio-pill"><input type="radio" name="clearance" value="none"><div class="radio-dot"></div> None</label>
+              <label class="radio-pill"><input type="radio" name="clearance" value="confidential"><div class="radio-dot"></div> Confidential</label>
+              <label class="radio-pill"><input type="radio" name="clearance" value="secret"><div class="radio-dot"></div> Secret</label>
+              <label class="radio-pill"><input type="radio" name="clearance" value="top_secret"><div class="radio-dot"></div> Top Secret</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Additional disclosures or comments</label>
+            <textarea name="additional_disclosures" placeholder="Any additional information you wish to disclose voluntarily..."></textarea>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 6: Consent & Signature -->
+    <div class="form-section">
+      <div class="section-head">
+        <div class="section-icon">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z"/><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5V2H4v-.5A1.5 1.5 0 0 1 5.5 0h5A1.5 1.5 0 0 1 12 1.5V2h-1v-.5A1.5 1.5 0 0 0 9.5 0h-3z"/></svg>
+        </div>
+        <div class="section-head-text">
+          <h2>Authorization &amp; Consent</h2>
+          <p>Review and sign the authorization agreement</p>
+        </div>
+        <span class="section-number">06 / 06</span>
+      </div>
+      <div class="section-body">
+        <div class="consent-box">
+          <p>
+            I, the undersigned candidate, hereby authorize the company and its designated agents to conduct a thorough background investigation. This may include, but is not limited to: verification of employment history, educational credentials, professional licenses, criminal record checks (where permitted by law), credit history (where applicable to the role), and personal references.
+          </p>
+          <p>
+            I understand that any material misrepresentation, false statement, or omission of information in this form may result in disqualification from consideration for employment, or if employed, may be grounds for immediate termination.
+          </p>
+          <p style="margin-bottom:0">
+            I certify that all information provided in this form is true, accurate, and complete to the best of my knowledge.
+          </p>
+
+          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.1);margin:18px 0">
+
+          <label class="consent-check">
+            <input type="checkbox" required>
+            <div class="consent-box-cb"></div>
+            <span>I have read, understood, and agree to the above authorization. I consent to the background verification process as described. <span style="color:var(--gold)">*</span></span>
+          </label>
+        </div>
+
+        <hr class="divider">
+        <div class="sub-heading">Candidate Declaration</div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Full Legal Name <span class="req">*</span></label>
+            <input type="text" name="full_legal_name" placeholder="As it appears on your ID">
+          </div>
+          <div class="field">
+            <label>Date of Signing <span class="req">*</span></label>
+            <input type="date">
+          </div>
+          <div class="field col-span-2">
+            <label>Digital Signature <span class="req">*</span></label>
+            <div class="sig-wrap">
+              <span class="sig-label">Click to add your signature</span>
+            </div>
+          </div>
+        </div>
+
+        <hr class="divider">
+        <div class="sub-heading">Supporting Documents</div>
+        <div class="grid-2">
+          <div class="field">
+            <label>Government-Issued Photo ID</label>
+            <input type="file" name="government_id" accept=".pdf,.jpg,.jpeg,.png" style="padding:7px 14px;background:#fff;cursor:pointer">
+            <span class="field-hint">PDF, JPG, or PNG — max 5MB</span>
+          </div>
+          <div class="field">
+            <label>Highest Qualification Certificate</label>
+            <input type="file" name="qualification_certificate" accept=".pdf,.jpg,.jpeg,.png" style="padding:7px 14px;background:#fff;cursor:pointer">
+            <span class="field-hint">PDF, JPG, or PNG — max 5MB</span>
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="button" class="btn-save">Save Draft</button>
+          <button type="submit" class="btn-submit">
+            <svg width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h4.5a.5.5 0 0 1 0 1H2z"/></svg>
+            Submit for Verification
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+  // ── Progress steps ──────────────────────────────────────────────
+  const steps = document.querySelectorAll('.prog-step');
+  steps.forEach((step) => {
+    step.addEventListener('click', () => {
+      steps.forEach(s => s.classList.remove('active'));
+      step.classList.add('active');
+    });
+  });
+
+  // ── Signature placeholder ────────────────────────────────────────
+  const sigWrap = document.querySelector('.sig-wrap');
+  if (sigWrap) {
+    sigWrap.addEventListener('click', () => {
+      sigWrap.innerHTML = '<span class="sig-label" style="color:var(--gold);font-style:normal;font-weight:500">✓ Signature captured</span>';
+      sigWrap.style.borderColor = 'var(--gold)';
+      sigWrap.style.background = 'var(--gold-pale)';
+    });
+  }
+
+  // ── Pre-fill today's date for "Date of Signing" ──────────────────
+  const dateInputs = document.querySelectorAll('input[type="date"]');
+  dateInputs.forEach(input => {
+    if (!input.value && input.closest('.field')?.querySelector('label')?.textContent.includes('Signing')) {
+      input.value = new Date().toISOString().split('T')[0];
+    }
+  });
+
+  // ── PDF Generator ────────────────────────────────────────────────
+  function generatePDF(formData) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+    const navy   = [15, 30, 53];
+    const gold   = [200, 169, 81];
+    const white  = [255, 255, 255];
+    const light  = [248, 246, 241];
+    const slate  = [74, 85, 104];
+    const border = [221, 213, 192];
+
+    const pageW = 210;
+    const pageH = 297;
+    const margin = 14;
+    const colW = pageW - margin * 2;
+    let y = 0;
+
+    // ── Header ──
+    doc.setFillColor(...navy);
+    doc.rect(0, 0, pageW, 42, 'F');
+    doc.setFillColor(...gold);
+    doc.rect(0, 42, pageW, 1.2, 'F');
+
+    doc.setTextColor(...gold);
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text('CONFIDENTIAL & SECURE  •  BGV-2026-EMP', margin, 13);
+
+    doc.setTextColor(...white);
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Employee Background Verification', margin, 24);
+
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(200, 200, 200);
+    doc.text('Human Resources Department  •  Version 3.1 — May 2026  •  Processing: 5–10 Business Days', margin, 33);
+
+    doc.setTextColor(160, 160, 160);
+    doc.setFontSize(7.5);
+    doc.text(`Generated: ${new Date().toLocaleDateString('en-IN', {day:'2-digit',month:'long',year:'numeric'})}`, pageW - margin, 33, { align: 'right' });
+
+    y = 52;
+
+    // ── Helper: section header ──
+    function sectionHeader(title, icon) {
+      if (y > pageH - 40) { doc.addPage(); y = 16; }
+      doc.setFillColor(...navy);
+      doc.roundedRect(margin, y, colW, 9, 1.5, 1.5, 'F');
+      doc.setTextColor(...gold);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text(title.toUpperCase(), margin + 4, y + 6);
+      y += 13;
+    }
+
+    // ── Helper: two-column row ──
+    function row(label, value, fullWidth = false) {
+      if (y > pageH - 18) { doc.addPage(); y = 16; }
+      const val = value || '—';
+      const halfW = colW / 2 - 3;
+
+      if (fullWidth) {
+        doc.setFillColor(...light);
+        doc.roundedRect(margin, y, colW, 8, 1, 1, 'F');
+        doc.setDrawColor(...border);
+        doc.roundedRect(margin, y, colW, 8, 1, 1, 'S');
+        doc.setTextColor(...slate);
+        doc.setFontSize(7);
+        doc.setFont('helvetica', 'bold');
+        doc.text(label, margin + 3, y + 3.2);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(30, 30, 30);
+        doc.setFontSize(8);
+        const lines = doc.splitTextToSize(val, colW - 6);
+        if (lines.length > 1) {
+          const boxH = lines.length * 5 + 6;
+          doc.setFillColor(...light);
+          doc.roundedRect(margin, y, colW, boxH, 1, 1, 'F');
+          doc.setDrawColor(...border);
+          doc.roundedRect(margin, y, colW, boxH, 1, 1, 'S');
+          doc.setTextColor(...slate);
+          doc.setFontSize(7);
+          doc.setFont('helvetica', 'bold');
+          doc.text(label, margin + 3, y + 3.2);
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(30, 30, 30);
+          doc.setFontSize(8);
+          lines.forEach((line, i) => doc.text(line, margin + 3, y + 7.5 + i * 5));
+          y += boxH + 2;
+          return;
+        }
+        doc.text(val, margin + 3, y + 6.5);
+        y += 10;
+        return;
+      }
+
+      // left cell
+      doc.setFillColor(...light);
+      doc.roundedRect(margin, y, halfW, 8, 1, 1, 'F');
+      doc.setDrawColor(...border);
+      doc.roundedRect(margin, y, halfW, 8, 1, 1, 'S');
+      doc.setTextColor(...slate);
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'bold');
+      doc.text(label, margin + 3, y + 3.2);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(30, 30, 30);
+      doc.setFontSize(8);
+      doc.text(doc.splitTextToSize(val, halfW - 6)[0], margin + 3, y + 6.5);
+      y += 10;
+    }
+
+    // ── Helper: two fields side by side ──
+    function rowPair(label1, val1, label2, val2) {
+      if (y > pageH - 18) { doc.addPage(); y = 16; }
+      const halfW = colW / 2 - 3;
+
+      [0, 1].forEach(i => {
+        const x = margin + i * (halfW + 6);
+        const lbl = i === 0 ? label1 : label2;
+        const val = (i === 0 ? val1 : val2) || '—';
+        doc.setFillColor(...light);
+        doc.roundedRect(x, y, halfW, 8, 1, 1, 'F');
+        doc.setDrawColor(...border);
+        doc.roundedRect(x, y, halfW, 8, 1, 1, 'S');
+        doc.setTextColor(...slate);
+        doc.setFontSize(7);
+        doc.setFont('helvetica', 'bold');
+        doc.text(lbl, x + 3, y + 3.2);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(30, 30, 30);
+        doc.setFontSize(8);
+        doc.text(doc.splitTextToSize(val, halfW - 6)[0], x + 3, y + 6.5);
+      });
+      y += 10;
+    }
+
+    // ── Helper: spacer ──
+    function spacer(h = 4) { y += h; }
+
+    // ══ SECTION 1: Personal ══
+    sectionHeader('01  Personal Information');
+    rowPair('First Name', formData.get('first_name'), 'Last Name', formData.get('last_name'));
+    rowPair('Middle Name', formData.get('middle_name'), 'Date of Birth', formData.get('date_of_birth'));
+    rowPair('Gender', formData.get('gender'), 'Nationality', formData.get('nationality'));
+    rowPair('ID Type', formData.get('id_type'), 'ID / Passport Number', formData.get('id_number'));
+    spacer();
+    rowPair('Personal Email', formData.get('personal_email'), 'Phone Number', formData.get('phone_number'));
+    row('Residential Address', formData.get('address'), true);
+    rowPair('City', formData.get('city'), 'State / Province', formData.get('state'));
+    rowPair('Postal Code', formData.get('postal_code'), 'Country', formData.get('country'));
+    rowPair('Years at Address', formData.get('years_at_address'), 'Previous Address', formData.get('previous_address'));
+    spacer(6);
+
+    // ══ SECTION 2: Employment ══
+    sectionHeader('02  Employment History');
+    rowPair('Current Employer', formData.get('employer_company'), 'Job Title', formData.get('employer_title'));
+    rowPair('Start Date', formData.get('employer1_start'), 'End Date', formData.get('employer1_end'));
+    rowPair('Supervisor', formData.get('employer_supervisor'), 'Reason for Leaving', formData.get('employer1_leaving_reason'));
+    rowPair('Previous Employer', formData.get('employer2_company'), 'Job Title', formData.get('employer2_title'));
+    row('Employment Gaps', formData.get('employment_gaps'), true);
+    spacer(6);
+
+    // ══ SECTION 3: Education ══
+    sectionHeader('03  Educational Background');
+    rowPair('Degree / Qualification', formData.get('degree'), 'Field of Study', formData.get('field_of_study'));
+    rowPair('Institution', formData.get('institution_name'), 'Location', formData.get('institution_location'));
+    rowPair('Graduation Year', formData.get('graduation_year'), 'GPA / Grade', formData.get('gpa'));
+    rowPair('Certification', formData.get('cert_name'), 'Issuing Organization', formData.get('cert_issuer'));
+    rowPair('Cert ID', formData.get('cert_id'), 'Currently Enrolled', formData.get('enrolled'));
+    spacer(6);
+
+    // ══ SECTION 4: References ══
+    sectionHeader('04  Professional References');
+    rowPair('Reference 1 Name', formData.get('ref1_name'), 'Reference 2 Name', formData.get('ref2_name'));
+    rowPair('Ref 1 Phone', formData.get('ref1_phone'), 'Ref 2 Phone', '—');
+    rowPair('Ref 1 Email', formData.get('ref1_email'), 'Ref 2 Email', '—');
+    spacer(6);
+
+    // ══ SECTION 5: Legal ══
+    sectionHeader('05  Legal & Background Disclosures');
+    rowPair('Criminal Conviction', formData.get('criminal'), 'Pending Legal Proceedings', formData.get('legal'));
+    rowPair('Dismissed for Misconduct', formData.get('misconduct'), 'NDA / Non-Compete', formData.get('nda'));
+    row('Security Clearance', formData.get('clearance'));
+    row('Criminal Details', formData.get('criminal_details'), true);
+    row('Additional Disclosures', formData.get('additional_disclosures'), true);
+    spacer(6);
+
+    // ══ SECTION 6: Consent ══
+    sectionHeader('06  Authorization & Consent');
+    rowPair('Full Legal Name', formData.get('full_legal_name'), 'Date of Signing', formData.get('date_of_signing') || new Date().toLocaleDateString());
+
+    // Consent declaration box
+    if (y > pageH - 30) { doc.addPage(); y = 16; }
+    doc.setFillColor(15, 30, 53);
+    doc.roundedRect(margin, y, colW, 18, 2, 2, 'F');
+    doc.setTextColor(...gold);
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'bold');
+    doc.text('CONSENT DECLARATION', margin + 4, y + 6);
+    doc.setTextColor(200, 200, 200);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.text('The candidate has read, understood, and agreed to the background verification authorization.', margin + 4, y + 11);
+    doc.text('All information provided is certified to be true, accurate, and complete to the best of their knowledge.', margin + 4, y + 15.5);
+    y += 22;
+
+    // ── Footer on every page ──
+    const totalPages = doc.getNumberOfPages();
+    for (let p = 1; p <= totalPages; p++) {
+      doc.setPage(p);
+      doc.setFillColor(...navy);
+      doc.rect(0, pageH - 10, pageW, 10, 'F');
+      doc.setTextColor(...gold);
+      doc.setFontSize(7);
+      doc.setFont('helvetica', 'normal');
+      doc.text('INCULCAR HR CONSULTANCY  •  Confidential & Secure  •  For Internal Use Only', margin, pageH - 4);
+      doc.setTextColor(160, 160, 160);
+      doc.text(`Page ${p} of ${totalPages}`, pageW - margin, pageH - 4, { align: 'right' });
+    }
+
+    return doc;
+  }
+
+  // ── Formspree AJAX submission ────────────────────────────────────
+  const form = document.getElementById('bgv-form');
+  const successMsg = document.getElementById('form-success');
+  const errorMsg = document.getElementById('form-error');
+  const submitBtn = form.querySelector('.btn-submit');
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<svg width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/><path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/></svg> Generating PDF & Submitting…';
+    errorMsg.style.display = 'none';
+
+    try {
+      const formData = new FormData(form);
+
+      // 1️⃣ Generate PDF and convert to base64
+      const doc = generatePDF(formData);
+      const pdfBase64 = doc.output('datauristring'); // base64 data URI
+
+      // 2️⃣ Add PDF as hidden field so Formspree email includes a download link note
+      //    (Formspree free plan doesn't support file attachments, so we trigger
+      //     a browser download for HR and send form data via Formspree)
+      const candidateName = (formData.get('first_name') || 'Candidate') + '_' + (formData.get('last_name') || 'BGV');
+      formData.append('pdf_note', `PDF auto-generated for ${candidateName} on ${new Date().toLocaleString()}`);
+
+      // 3️⃣ Submit to Formspree
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (response.ok) {
+        // 4️⃣ Auto-download PDF for HR
+        doc.save(`BGV_${candidateName}_${new Date().toISOString().split('T')[0]}.pdf`);
+
+        // 5️⃣ Show success
+        form.style.display = 'none';
+        successMsg.innerHTML = `
+          <div style="font-size:32px; margin-bottom:10px;">✅</div>
+          <strong style="font-size:18px;">Form Submitted Successfully!</strong><br>
+          Thank you — your background verification form has been received.<br>
+          <span style="font-size:13px; opacity:0.85;">A PDF copy has been automatically downloaded. You will be contacted within 5–10 business days.</span>
+        `;
+        successMsg.style.display = 'block';
+        successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        throw new Error('Server error');
+      }
+    } catch (err) {
+      errorMsg.style.display = 'block';
+      errorMsg.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<svg width="15" height="15" fill="currentColor" viewBox="0 0 16 16"><path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 0 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h4.5a.5.5 0 0 1 0 1H2z"/></svg> Submit for Verification';
+    }
+  });
+</script>
+
+</body>
+</html>
